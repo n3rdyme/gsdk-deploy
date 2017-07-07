@@ -1,0 +1,24 @@
+# =============================================================================
+# = Deployment configuration
+# = https://github.com/vroomlabs/gsdk-deploy/blob/master/README.md
+# =============================================================================
+"dev":
+  "name": "$(SERVICE_NAME)-$(BRANCH)"
+  "google-project": "$GCLOUD_PROJECT"
+  "host": "$(SERVICE_NAME)-$(BRANCH).example.com"
+  "api-config": ["./service.pb", "./api_config.yaml"]
+  "env":
+    - name: NODE_ENV
+      value: "$BRANCH"
+    - name: "ENDPOINT_NAME"
+    - name: "ENDPOINT_VERSION"
+  "replicas": 2
+  "clusters":
+    - "us-central1-a"
+"prod":
+  "extends": "dev"
+  "clusters":
+    - "us-central1-a"
+    - "us-east4-c"
+    - "us-west1-c"
+# =============================================================================

@@ -1,0 +1,24 @@
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "$SERVICE_NAME",
+    "namespace": "default"
+  },
+  "spec": {
+    "selector": {
+      "app": "$SERVICE_NAME"
+    },
+    "ports": [
+      {
+        "name": "$SERVICE_NAME",
+        "port": 443,
+        "protocol": "TCP",
+        "targetPort": $SSL_PORT,
+        "nodePort": $NODE_PORT
+      }
+    ],
+    "sessionAffinity": "None",
+    "type": "NodePort"
+  }
+}

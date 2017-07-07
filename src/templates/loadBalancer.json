@@ -1,0 +1,104 @@
+{
+  "httpsLoadBalancer": [
+    {
+      "sslCertificates": {
+        "invoke": "selectCertificate",
+        "preserve": true,
+        "returns": "selfLink"
+      }
+    },
+    {
+      "healthChecks": {
+        "fetch": {
+          "healthCheck": "$NAME-hc-$NODE_PORT"
+        },
+        "create": {
+          "name": "$NAME-hc-$NODE_PORT",
+          "description": "Generated for $SERVICE_NAME on ${HOSTNAME}",
+          "type": "HTTPS",
+          "httpsHealthCheck": {
+            "port": "$NODE_PORT",
+            "requestPath": "$LIVENESSPROBE"
+          }
+        },
+        "returns": "selfLink"
+      }
+    },
+    {
+      "backendServices": {
+        "fetch": {
+          "backendService": "$NAME"
+        },
+        "invoke": "configureBackend",
+        "params": { "healthCheck": "$HEALTHCHECKS" },
+        "returns": "selfLink"
+      }
+    },
+    {
+      "urlMaps": {
+        "fetch": {
+          "urlMap": "$NAME"
+        },
+        "create": {
+          "name": "$NAME",
+          "description": "Generated for $SERVICE_NAME on ${HOSTNAME}",
+          "defaultService": "$BACKENDSERVICES"
+        },
+        "returns": "selfLink"
+      }
+    },
+    {
+      "targetHttpsProxies": {
+        "fetch": {
+          "targetHttpsProxy": "$NAME"
+        },
+        "create": {
+          "name": "$NAME",
+          "description": "Generated for $SERVICE_NAME on ${HOSTNAME}",
+          "urlMap": "$URLMAPS",
+          "sslCertificates": [
+            "$SSLCERTIFICATES"
+          ]
+        },
+        "returns": "selfLink"
+      }
+    },
+    {
+      "globalAddresses": {
+        "fetch": {
+          "address": "$NAME"
+        },
+        "create": {
+          "name": "$NAME",
+          "description": "Generated for $SERVICE_NAME on ${HOSTNAME}"
+        },
+        "returns": "address"
+      }
+    },
+    {
+      "globalForwardingRules": {
+        "fetch": {
+          "forwardingRule": "$NAME"
+        },
+        "create": {
+          "name": "$NAME",
+          "description": "Generated for $SERVICE_NAME on ${HOSTNAME}",
+          "IPAddress": "$GLOBALADDRESSES",
+          "target": "$TARGETHTTPSPROXIES",
+          "IPProtocol": "TCP",
+          "portRange": "443-443"
+        },
+        "returns": "selfLink"
+      }
+    },
+    {
+      "checkDnsEntry": {
+        "invoke": "checkDnsEntry",
+        "params": {
+          "host": "$HOSTNAME",
+          "address": "$GLOBALADDRESSES"
+        }
+      }
+    }
+  ]
+}

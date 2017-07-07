@@ -1,0 +1,140 @@
+{
+  "apiVersion": "extensions/v1beta1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "$SERVICE_NAME",
+    "namespace": "default"
+  },
+  "spec": {
+    "replicas": $REPLICAS,
+    "selector": {
+      "matchLabels": {
+        "app": "$SERVICE_NAME"
+      }
+    },
+    "strategy": {
+      "rollingUpdate": {
+        "maxSurge": 1,
+        "maxUnavailable": 1
+      },
+      "type": "RollingUpdate"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "$SERVICE_NAME"
+        }
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "nginx",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "nginx"
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "$SERVICE_NAME",
+            "image": "$DOCKER_IMAGE",
+            "imagePullPolicy": "IfNotPresent",
+            "env": [],
+            "ports": [
+              {
+                "containerPort": $APP_PORT,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "500Mi"
+              },
+              "requests": {
+                "cpu": "20m",
+                "memory": "100Mi"
+              }
+            }
+          },
+          {
+            "name": "esp",
+            "image": "gcr.io/endpoints-release/endpoints-runtime:1",
+            "imagePullPolicy": "IfNotPresent",
+            "args": [
+              "--http_port",
+              "9000",
+              "-S",
+              "$SSL_PORT",
+              "-s",
+              "$ENDPOINT_NAME",
+              "-v",
+              "$ENDPOINT_VERSION",
+              "-a",
+              "grpc://127.0.0.1:$APP_PORT"
+            ],
+            "volumeMounts": [
+              {
+                "mountPath": "/etc/nginx/ssl",
+                "name": "nginx",
+                "readOnly": true
+              }
+            ],
+            "ports": [
+              {
+                "name": "esp-http-port",
+                "containerPort": 9000,
+                "protocol": "TCP"
+              },
+              {
+                "name": "esp-https-port",
+                "containerPort": $SSL_PORT,
+                "protocol": "TCP"
+              }
+            ],
+            "livenessProbe": {
+              "failureThreshold": 2,
+              "httpGet": {
+                "path": "$LIVENESS_PROBE",
+                "port": "esp-http-port",
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 20,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "timeoutSeconds": 3
+            },
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "httpGet": {
+                "path": "$READINESS_PROBE",
+                "port": "esp-http-port",
+                "scheme": "HTTP"
+              },
+              "initialDelaySeconds": 20,
+              "periodSeconds": 5,
+              "successThreshold": 1,
+              "timeoutSeconds": 3
+            },
+            "resources": {
+              "limits": {
+                "cpu": "50m",
+                "memory": "500Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "100Mi"
+              }
+            }
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {},
+        "terminationGracePeriodSeconds": 60
+      }
+    }
+  }
+}

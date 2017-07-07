@@ -1,0 +1,53 @@
+{
+  "name": "@vroomlabs/gsdk-deploy",
+  "version": "1.0.26",
+  "description": "Google Cloud deployment script for kubernetes clusters using Global Load Balancer",
+  "author": "vroomlabs",
+  "homepage": "https://github.com/vroomlabs/gsdk-deploy#readme",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vroomlabs/gsdk-deploy/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/",
+    "build": "./node_modules/.bin/babel src -d lib --retain-lines --minified --copy-files",
+    "watch": "./node_modules/.bin/babel src -d lib --retain-lines --minified --copy-files --watch",
+    "npm-push": "npm version patch && npm publish -tag latest --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vroomlabs/gsdk-deploy.git"
+  },
+  "keywords": [
+    "Google",
+    "Cloud",
+    "Kubernetes",
+    "Deployment",
+    "googleapis",
+    "https",
+    "Global",
+    "Load",
+    "Balancer"
+  ],
+  "bin": {
+    "gsdk-deploy": "./bin/gsdk-deploy"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "colors": "^1.1.2",
+    "debug": "^2.6.8",
+    "googleapis": "^20.0.1",
+    "pem": "^1.9.7",
+    "winston": "^2.3.1",
+    "yamljs": "^0.3.0",
+    "yesno": "^0.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-latest": "^6.24.1",
+    "eslint": "^3.19.0",
+    "eslint-plugin-node": "^4.2.2"
+  }
+}
