@@ -64,9 +64,10 @@ There are other options available that can be discovered by the following comman
 ## Prerequisites:
 
   1. First things first, you need a Google account, and a Cloud Project.
-  3. This tool was written on and for a linux machine, so if you have issues on other environments please 
+  2. This tool was written on and for a linux machine, so if you have issues on other environments please 
      feel free submit a pull request to address your specific operating system.
-  2. Since this service configuration assumes end-to-end SSL, you will **need a certifcate that matches the
+  3. You must enable enpoints on your google project at: https://console.cloud.google.com/endpoints
+  4. Since this service configuration assumes end-to-end SSL, you will **need a certifcate that matches the
      hostname** from the configuration file you will provide. You can always generate a self-signed certificate
      for testing via the following command:
      
