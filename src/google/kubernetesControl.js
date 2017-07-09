@@ -80,7 +80,7 @@ export class KubernetesControl {
     }
 
     /**
-     * @param {{name, image, endpointName, endpointVersion, protocol}} service
+     * @param {{name, image, endpointName, endpointVersion, protocol, proxyImage}} service
      */
     async deployImage(service) {
         logger.verbose(`Preparing to deploy ${service.name} on ${this.cluster.name}.`, {image: service, apiVer: service.endpointVersion});
@@ -90,7 +90,7 @@ export class KubernetesControl {
         fs.writeFileSync(svcConfig, JSON.stringify(svcTemplate, null, 2));
 
         let depConfig = path.join(this.config.artifacts, service.name + '-deploy.json');
-        let deployTemplate = this.getDeployTemplate(service.name, service.image, service.endpointName, service.endpointVersion, service.protocol);
+        let deployTemplate = this.getDeployTemplate(service.name, service.image, service.endpointName, service.endpointVersion, service.protocol, service.proxyImage);
         fs.writeFileSync(depConfig, JSON.stringify(deployTemplate, null, 2));
 
         // Install the ssl certificate if missing
@@ -261,7 +261,7 @@ export class KubernetesControl {
     /**
      * Returns the deploy config
      */
-    getDeployTemplate(name, image, epName, epVersion, protocol) {
+    getDeployTemplate(name, image, epName, epVersion, protocol, epImage) {
         process.env.ENDPOINT_NAME = epName;
         process.env.ENDPOINT_VERSION = epVersion;
 
@@ -275,6 +275,7 @@ export class KubernetesControl {
             SSL_PORT: this.config.current.sslPort,
             ENDPOINT_NAME: epName,
             ENDPOINT_VERSION: epVersion,
+            PROXY_IMAGE: epImage,
             LIVENESS_PROBE: this.config.current.livenessProbe,
             READINESS_PROBE: this.config.current.readinessProbe,
         };

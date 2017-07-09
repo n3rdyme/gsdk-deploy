@@ -46,7 +46,7 @@ export class GoogleKubernetes {
     /**
      * @param {string} name - name of the service
      * @param {string} dockerImage
-     * @param {{name: string, version: string, grpc: boolean}} endpointInfo
+     * @param {{name: string, version: string, grpc: boolean, hasApi: boolean}} endpointInfo
      * @param {object} clusters - map from result of getClusters
      */
     async deployAll(name, dockerImage, endpointInfo, clusters) {
@@ -57,7 +57,10 @@ export class GoogleKubernetes {
             image: dockerImage,
             endpointName: endpointInfo.name,
             endpointVersion: endpointInfo.version,
-            protocol: endpointInfo.grpc ? 'grpc' : 'http'
+            protocol: endpointInfo.grpc ? 'grpc' : 'http',
+            proxyImage: endpointInfo.hasApi
+                ? 'gcr.io/endpoints-release/endpoints-runtime:1'
+                : 'tdalabs/nginx-ssl-proxy:latest'
         };
 
         for (let ix = 0; ix < clusterNames.length; ix++) {

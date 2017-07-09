@@ -42,8 +42,9 @@ export class GoogleSvcManager {
      */
     async deployEndpoint(fileNames) {
 
-        let endpoint = { name: undefined, version: undefined, grpc: undefined };
+        let endpoint = { hasApi: false, name: undefined, version: undefined, grpc: undefined };
         if (fileNames.length > 0) {
+            endpoint.hasApi = true;
             logger.info('Updating endpoint...');
 
             let loadedYaml = fileNames.filter(p => p.match(/.ya?ml$/)).map(p => YAML.load(p));
@@ -67,7 +68,7 @@ export class GoogleSvcManager {
      */
     async getLatestEndpoint(fileNames) {
         if (fileNames.length === 0) {
-            return {};// no endpoint
+            return { hasApi: false };// no endpoint
         }
 
         let loadedYaml = fileNames.filter(p => p.match(/.ya?ml$/)).map(p => YAML.load(p));
@@ -89,6 +90,7 @@ export class GoogleSvcManager {
         process.env.ENDPOINT_NAME = api.serviceConfig.name;
         process.env.ENDPOINT_VERSION = api.serviceConfig.id;
         return {
+            hasApi: true,
             name: api.serviceConfig.name,
             version: api.serviceConfig.id,
             grpc: isGrpc

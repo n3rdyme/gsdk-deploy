@@ -60,7 +60,7 @@
           },
           {
             "name": "esp",
-            "image": "gcr.io/endpoints-release/endpoints-runtime:1",
+            "image": "$PROXY_IMAGE",
             "imagePullPolicy": "IfNotPresent",
             "args": [
               "--http_port",
