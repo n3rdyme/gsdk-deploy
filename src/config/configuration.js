@@ -172,13 +172,16 @@ export class Configuration {
             let fname = apiConfig[ix];
             let fType = fname.match(/.ya?ml$/i) ? YAML : fname.match(/.json$/i) ? JSON : null;
             let cfg = fType ? fType.parse(fs.readFileSync(fname).toString()) : {};
-            if (cfg.type === 'google.api.Service') {
-                let newPath = path.join(this.artifacts, path.basename(fname));
-                cfg.name = replaceInText(this.current.endpointFormat);
-                logger.verbose('replaced service endpoint name', { 'new': newPath, old: fname, value: cfg.name });
-                fs.writeFileSync(newPath, fType.stringify(cfg, null, 2));
-                apiConfig[ix] = newPath;
-            }
+            let prop = null;
+            if (cfg.type === 'google.api.Service' && cfg.name) { prop = 'name'; }
+            else if (cfg.swagger && cfg.swagger.toString().match(/^\d/)) { prop = 'host'; }
+            else { continue; }
+
+            let newPath = path.join(this.artifacts, path.basename(fname));
+            cfg[prop] = replaceInText(this.current.endpointFormat);
+            logger.verbose('replaced service endpoint name', { 'new': newPath, old: fname, value: cfg[prop] });
+            fs.writeFileSync(newPath, fType.stringify(cfg, null, 2));
+            apiConfig[ix] = newPath;
         }
 
         return apiConfig;

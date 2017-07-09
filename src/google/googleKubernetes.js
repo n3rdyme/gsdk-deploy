@@ -46,7 +46,7 @@ export class GoogleKubernetes {
     /**
      * @param {string} name - name of the service
      * @param {string} dockerImage
-     * @param {{name: string, version: string}} endpointInfo
+     * @param {{name: string, version: string, grpc: boolean}} endpointInfo
      * @param {object} clusters - map from result of getClusters
      */
     async deployAll(name, dockerImage, endpointInfo, clusters) {
@@ -56,7 +56,8 @@ export class GoogleKubernetes {
             name: name,
             image: dockerImage,
             endpointName: endpointInfo.name,
-            endpointVersion: endpointInfo.version
+            endpointVersion: endpointInfo.version,
+            protocol: endpointInfo.grpc ? 'grpc' : 'http'
         };
 
         for (let ix = 0; ix < clusterNames.length; ix++) {

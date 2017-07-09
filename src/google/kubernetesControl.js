@@ -80,7 +80,7 @@ export class KubernetesControl {
     }
 
     /**
-     * @param {{name: string, image: string, endpointName: string, endpointVersion: string}} service
+     * @param {{name, image, endpointName, endpointVersion, protocol}} service
      */
     async deployImage(service) {
         logger.verbose(`Preparing to deploy ${service.name} on ${this.cluster.name}.`, {image: service, apiVer: service.endpointVersion});
@@ -90,7 +90,7 @@ export class KubernetesControl {
         fs.writeFileSync(svcConfig, JSON.stringify(svcTemplate, null, 2));
 
         let depConfig = path.join(this.config.artifacts, service.name + '-deploy.json');
-        let deployTemplate = this.getDeployTemplate(service.name, service.image, service.endpointName, service.endpointVersion);
+        let deployTemplate = this.getDeployTemplate(service.name, service.image, service.endpointName, service.endpointVersion, service.protocol);
         fs.writeFileSync(depConfig, JSON.stringify(deployTemplate, null, 2));
 
         // Install the ssl certificate if missing
@@ -261,7 +261,7 @@ export class KubernetesControl {
     /**
      * Returns the deploy config
      */
-    getDeployTemplate(name, image, epName, epVersion) {
+    getDeployTemplate(name, image, epName, epVersion, protocol) {
         process.env.ENDPOINT_NAME = epName;
         process.env.ENDPOINT_VERSION = epVersion;
 
@@ -270,6 +270,7 @@ export class KubernetesControl {
             SERVICE_NAME: name,
             REPLICAS: this.config.current.replicas,
             DOCKER_IMAGE: image,
+            APP_PROTOCOL: protocol,
             APP_PORT: this.config.current.port,
             SSL_PORT: this.config.current.sslPort,
             ENDPOINT_NAME: epName,
