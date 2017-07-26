@@ -131,8 +131,6 @@
         ],
         "dnsPolicy": "ClusterFirst",
         "restartPolicy": "Always",
-        "schedulerName": "default-scheduler",
-        "securityContext": {},
         "terminationGracePeriodSeconds": 60
       }
     }
