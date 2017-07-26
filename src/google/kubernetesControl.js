@@ -85,11 +85,12 @@ export class KubernetesControl {
     async deployImage(service) {
         logger.verbose(`Preparing to deploy ${service.name} on ${this.cluster.name}.`, {image: service, apiVer: service.endpointVersion});
 
-        let svcConfig = path.join(this.config.artifacts, service.name + '-svc.json');
+        let tempPath = this.config.current.path;
+        let svcConfig = path.join(tempPath, service.name + '-svc.json');
         let svcTemplate = this.getServiceTemplate(service.name);
         fs.writeFileSync(svcConfig, JSON.stringify(svcTemplate, null, 2));
 
-        let depConfig = path.join(this.config.artifacts, service.name + '-deploy.json');
+        let depConfig = path.join(tempPath, service.name + '-deploy.json');
         let deployTemplate = this.getDeployTemplate(service.name, service.image, service.endpointName, service.endpointVersion, service.protocol, service.proxyImage);
         fs.writeFileSync(depConfig, JSON.stringify(deployTemplate, null, 2));
 

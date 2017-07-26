@@ -87,7 +87,7 @@ export class GoogleKubernetes {
         // If you are using sudo with gcloud and not with kubectl we have to change owner.
         if (this.gauth.gcloud.match(/^sudo/)) {
             await shell.exec('sudo chown -R ubuntu:ubuntu /home/ubuntu/.kube');
-            await shell.exec('sudo chown -R ubuntu:ubuntu /home/ubuntu/.config/gcloud/credentials');
+            await shell.exec('sudo chown -R ubuntu:ubuntu /home/ubuntu/.config/gcloud/');
         }
 
         return new KubernetesControl(this.config, cluster);
