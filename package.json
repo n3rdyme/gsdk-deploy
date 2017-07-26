@@ -13,7 +13,7 @@
     "lint": "./node_modules/.bin/eslint src/",
     "build": "./node_modules/.bin/babel src -d lib --retain-lines --minified --copy-files",
     "watch": "./node_modules/.bin/babel src -d lib --retain-lines --minified --copy-files --watch",
-    "npm-push": "npm version patch && npm publish -tag latest --access public && git push"
+    "npm-push": "npm run build && npm version patch && npm publish -tag latest --access public && git push"
   },
   "repository": {
     "type": "git",
