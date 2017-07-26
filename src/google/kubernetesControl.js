@@ -85,7 +85,7 @@ export class KubernetesControl {
     async deployImage(service) {
         logger.verbose(`Preparing to deploy ${service.name} on ${this.cluster.name}.`, {image: service, apiVer: service.endpointVersion});
 
-        let tempPath = this.config.current.path;
+        let tempPath = path.dirname(this.config.current.path);
         let svcConfig = path.join(tempPath, service.name + '-svc.json');
         let svcTemplate = this.getServiceTemplate(service.name);
         fs.writeFileSync(svcConfig, JSON.stringify(svcTemplate, null, 2));
