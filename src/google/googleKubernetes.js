@@ -226,10 +226,21 @@ export class GoogleKubernetes {
         }
 
         for (let ix = 0; ix < cluster.instanceGroups.length; ix++) {
+
+            let zoneName = cluster.zone;
+            //.../v1/projects/tda-win-servers/zones/us-central1-b/instanceGroups/
             let grp = cluster.instanceGroups[ix];
+            let uriParts = grp.split('/');
+            for (let pix = 0; pix < uriParts.length - 1; pix++) {
+                if (uriParts[pix] === 'zones') {
+                    zoneName = uriParts[pix + 1];
+                    break;
+                }
+            }
+
             let fetch = {
                 project: this.config.project,
-                zone: cluster.zone,
+                zone: zoneName,
                 instanceGroup: path.basename(grp),
             };
 
@@ -245,7 +256,7 @@ export class GoogleKubernetes {
             let namedPorts = (groupInfo.namedPorts || []).filter(p => p.name !== port.name).concat(port);
             let req = {
                 project: this.config.project,
-                zone: cluster.zone,
+                zone: zoneName,
                 instanceGroup: path.basename(grp),
                 resource: {
                     namedPorts: namedPorts,
