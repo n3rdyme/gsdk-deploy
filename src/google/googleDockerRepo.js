@@ -98,7 +98,7 @@ export class GoogleDockerRepo {
         logger.verbose('pushing docker image', { source: image, target: targetImage, latest: latestTag });
 
         logger.info(`Tagging docker image ${image} as ${targetImage}`);
-        await shell.exec(`${this.docker} tag -f ${image} ${targetImage}`);
+        await shell.exec(`${this.docker} tag ${image} ${targetImage}`);
 
         logger.info('Pushing docker image: ' + targetImage);
         await shell.exec(`${this.gauth.gcloud} docker -- push ${targetImage}`, { direct: true });
