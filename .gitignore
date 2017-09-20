@@ -1,0 +1,7 @@
+/.*
+/**/*.log
+/*.lock
+/*-lock.json
+/lib/
+/node_modules
+/artifacts

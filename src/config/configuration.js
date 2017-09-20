@@ -177,9 +177,19 @@ export class Configuration {
             else if (cfg.swagger && cfg.swagger.toString().match(/^\d/)) { prop = 'host'; }
             else { continue; }
 
+            // Replace the endpoint proper name with the value from endpointFormat
+            let correctedName = replaceInText(this.current.endpointFormat);;
             let newPath = path.join(this.artifacts, path.basename(fname));
-            cfg[prop] = replaceInText(this.current.endpointFormat);
+            cfg[prop] = correctedName;
             logger.verbose('replaced service endpoint name', { 'new': newPath, old: fname, value: cfg[prop] });
+            // ROK - look for endpoints collection and if it matches the last 2 segments, replace it, i.e. cloud.goog, or vroomapi.com match
+            (cfg.endpoints || [])
+                .forEach(ep => {
+                    if (ep.name && ep.name.split('.').slice(-2).join('.') === correctedName.split('.').slice(-2).join('.')) {
+                        ep.name = correctedName;
+                    }
+                });
+
             fs.writeFileSync(newPath, fType.stringify(cfg, null, 2));
             apiConfig[ix] = newPath;
         }
