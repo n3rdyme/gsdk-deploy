@@ -32,6 +32,9 @@ import * as google from 'googleapis';
 import {logger} from '../util/logger';
 import * as shell from '../util/shell';
 
+const request = require('request-promise');
+const packageInfo = require('../../package.json');
+
 export class GoogleApi {
     /**
      * @param {string} gcloud
@@ -48,8 +51,22 @@ export class GoogleApi {
      * Upgrades the sdk components if desired.
      */
     async upgradeSdk() {
+        let reqVersion = '';
+        if (packageInfo['gsdk-version']) {
+            let reqinfo = {url: packageInfo['gsdk-version'], json: true};
+            try {
+                let versionInfo = await request(reqinfo);
+                if (versionInfo && versionInfo.version && versionInfo.version.match(/^\d+.\d+.\d+$/)) {
+                    reqVersion = ` --version ${versionInfo.version}`;
+                }
+            }
+            catch (e) {
+                logger.verbose('Unable to fetch sdk version.', { request: reqinfo, error: e.message });
+            }
+        }
+
         logger.info('Updating gcloud sdk...');
-        try { await shell.exec(`${this.gcloud} --quiet components update`, { direct: 'silly' }); }
+        try { await shell.exec(`${this.gcloud} --quiet components update${reqVersion}`, { direct: 'silly' }); }
         catch (ex) {
             logger.verbose('Failed to update gcloud sdk.', ex);
         }
@@ -68,6 +85,7 @@ export class GoogleApi {
         if (args.autoUpgrade) {
             await this.upgradeSdk();
         }
+
         let versions = {};
         let text = await shell.exec(`${this.gcloud} version`);
         logger.silly('gcloud version:\n' + text);
