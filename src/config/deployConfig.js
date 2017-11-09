@@ -58,7 +58,8 @@ export class DeployConfig {
         this.deployTemplate = ''; // Templated creation of deployment
         this.serviceTemplate = ''; // Templated creation of service
         this.loadBalancerTemplate = ''; // Templated creation of Load Balancer
-        this.proxyImage = '';
+        this.proxyImage = ''; // Defaults to gcr.io/endpoints-release/endpoints-runtime:1
+        this.printPrimitiveFields = false; // TRUE to output primitive default field values
     }
 
     assertValid() {

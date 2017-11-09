@@ -279,6 +279,9 @@ export class KubernetesControl {
             PROXY_IMAGE: epImage,
             LIVENESS_PROBE: this.config.current.livenessProbe,
             READINESS_PROBE: this.config.current.readinessProbe,
+            PRINT_PRIMITIVE_FIELDS: (this.config.current.printPrimitiveFields
+                ? '"--transcoding_always_print_primitive_fields",'
+                : '')
         };
         text = replaceInText(text, values);
         let template = JSON.parse(text);
