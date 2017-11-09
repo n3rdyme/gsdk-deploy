@@ -59,7 +59,7 @@
             }
           },
           {
-            "name": "esp",
+            "name": "$(SERVICE_NAME)-esp",
             "image": "$PROXY_IMAGE",
             "imagePullPolicy": "Always",
             "args": [
