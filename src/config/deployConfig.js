@@ -58,6 +58,7 @@ export class DeployConfig {
         this.deployTemplate = ''; // Templated creation of deployment
         this.serviceTemplate = ''; // Templated creation of service
         this.loadBalancerTemplate = ''; // Templated creation of Load Balancer
+        this.proxyImage = '';
     }
 
     assertValid() {

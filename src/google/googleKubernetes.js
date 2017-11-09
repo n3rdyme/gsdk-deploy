@@ -58,9 +58,9 @@ export class GoogleKubernetes {
             endpointName: endpointInfo.name,
             endpointVersion: endpointInfo.version,
             protocol: endpointInfo.grpc ? 'grpc' : 'http',
-            proxyImage: endpointInfo.hasApi
+            proxyImage: this.config.current.proxyImage || (endpointInfo.hasApi
                 ? 'gcr.io/endpoints-release/endpoints-runtime:1'
-                : 'tdalabs/nginx-ssl-proxy:latest'
+                : 'tdalabs/nginx-ssl-proxy:latest')
         };
 
         for (let ix = 0; ix < clusterNames.length; ix++) {
