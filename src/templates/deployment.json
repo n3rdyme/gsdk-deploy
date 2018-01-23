@@ -104,7 +104,7 @@
               "initialDelaySeconds": 20,
               "periodSeconds": 30,
               "successThreshold": 1,
-              "timeoutSeconds": 15
+              "timeoutSeconds": 30
             },
             "readinessProbe": {
               "failureThreshold": 3,
@@ -116,7 +116,7 @@
               "initialDelaySeconds": 20,
               "periodSeconds": 51,
               "successThreshold": 1,
-              "timeoutSeconds": 15
+              "timeoutSeconds": 30
             },
             "resources": {
               "limits": {
