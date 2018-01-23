@@ -16,6 +16,10 @@
           "name": "$NAME-hc-$NODE_PORT",
           "description": "Generated for $SERVICE_NAME on ${HOSTNAME}",
           "type": "HTTPS",
+          "checkIntervalSec": 30,
+          "timeoutSec": 30,
+          "healthyThreshold": 2,
+          "unhealthyThreshold": 5,
           "httpsHealthCheck": {
             "port": "$NODE_PORT",
             "requestPath": "$LIVENESSPROBE"
