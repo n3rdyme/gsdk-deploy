@@ -1,0 +1,7 @@
+src
+test
+node_modules
+samples
+artifacts
+*.log
+*.lock
