@@ -1,6 +1,6 @@
 {
   "name": "@vroomlabs/gsdk-deploy",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "description": "Google Cloud deployment script for kubernetes clusters using Global Load Balancer",
   "author": "vroomlabs",
   "homepage": "https://github.com/vroomlabs/gsdk-deploy#readme",
