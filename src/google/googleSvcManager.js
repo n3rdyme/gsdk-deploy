@@ -51,7 +51,7 @@ export class GoogleSvcManager {
             let loadedJson = fileNames.filter(p => p.match(/.json$/)).map(p => JSON.parse(fs.readFileSync(p)));
             endpoint.grpc = loadedYaml.concat(loadedJson).filter(p => (p.type === 'google.api.Service' && p.name)).length > 0;
 
-            let json = await shell.exec(`${this.gauth.gcloud} service-management deploy ${fileNames.join(' ')} ` +
+            let json = await shell.exec(`${this.gauth.gcloud} endpoints services deploy ${fileNames.join(' ')} ` +
                     `--project ${this.gauth.project} --format=json`, { direct: 'debug', stdout: () => {} });
 
             let api = JSON.parse(json);
@@ -83,7 +83,7 @@ export class GoogleSvcManager {
         let isGrpc = endpoint.type === 'google.api.Service';
         endpoint = { name: endpoint.name || endpoint.host };
 
-        let json = await shell.exec(`${this.gauth.gcloud} service-management describe ${endpoint.name} ` +
+        let json = await shell.exec(`${this.gauth.gcloud} endpoints services describe ${endpoint.name} ` +
                 `--project ${this.gauth.project} --format=json`);
         let api = JSON.parse(json);
         logger.verbose(`Using endpoint version ${api.serviceConfig.id} of ${api.serviceConfig.name}`);
